@@ -24,4 +24,17 @@ const authenticate = (req, res, next) => {
   }
 };
 
-module.exports = authenticate;
+// ✅ Middleware to check if the user is a business admin
+const isBusinessAdmin = (req, res, next) => {
+  if (req.user.role !== "business_admin") {
+    return res.json({
+      status: 403,
+      data: {
+        message: "Access denied. Only business admins can perform this action.",
+      },
+    });
+  }
+  next();
+};
+
+module.exports = { authenticate, isBusinessAdmin };
