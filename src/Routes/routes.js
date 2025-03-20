@@ -1,4 +1,5 @@
 const express = require("express");
+const multer = require("multer");
 const {
   SignUp,
   ResendOTP,
@@ -23,7 +24,17 @@ const {
   publishedOfferList,
   businessOfferList,
 } = require("../offers/offers");
+const uploadImageCloudinary = require("../Cloundinary/imageUpload");
 const router = express.Router();
+
+const storage = multer.diskStorage({});
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 1024 * 1024 * 10,
+  },
+});
 
 // User Apis
 router.post("/SignUp", SignUp);
@@ -48,7 +59,6 @@ router.post(
   isBusinessAdmin,
   createOrUpdateOffer
 );
-
 router.delete("/delete-offer", authenticate, isBusinessAdmin, deleteOffer);
 router.post(
   "/publish-offer",
@@ -63,5 +73,8 @@ router.get(
   isBusinessAdmin,
   businessOfferList
 );
+
+//image upload
+router.post("/upload-image", upload.single("image"), uploadImageCloudinary);
 
 module.exports = router;
